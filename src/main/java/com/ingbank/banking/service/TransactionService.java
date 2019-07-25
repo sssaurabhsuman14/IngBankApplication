@@ -1,18 +1,22 @@
 package com.ingbank.banking.service;
 
-import java.sql.SQLDataException;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.ingbank.banking.entity.Transaction;
-import com.ingbank.banking.exception.ApplicationException;
-import com.ingbank.banking.model.TransactionRequestModel;
+import com.ingbank.banking.model.StatementModel;
 
 
 @Service
 public interface TransactionService {
 
-	Transaction doTransaction(TransactionRequestModel transactionRequest)throws ApplicationException, SQLDataException;
+	//Transaction doTransaction(TransactionRequestModel transactionRequest)throws ApplicationException, SQLDataException;
 
-	//public Map<String, Map<String, List<StatementModel>>> getYearlyStatement(Long customerId, String month);
+	public Map<String, List<StatementModel>> getYearlyStatement(Long customerId, String year);
+	
+	//public List<TransactionHistoryDto> getTransactions(Customer customerId);
+	
+	public Map<String, Map<String, List<StatementModel>>> getYearly(Long customerId, String year);
+
 }
