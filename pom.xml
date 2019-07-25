@@ -28,6 +28,13 @@
 			<optional>true</optional>
 
 		</dependency>
+		
+		<!-- spring-boot-starter-mail -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+ 
 
 		<!-- Swagger -->
 		<dependency>
