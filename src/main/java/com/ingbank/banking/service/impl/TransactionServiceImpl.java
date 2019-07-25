@@ -222,7 +222,7 @@ public class TransactionServiceImpl implements TransactionService {
 	public Optional<List<Transaction>> viewTransactionHistory(Long userId) throws ApplicationException {
 	 Customer customer = customerService.getCustomer(userId);
 	 Pageable pageable = PageRequest.of(0, 10, Sort.by("transactionId").descending());
-	 Optional<List<Transaction>>transactionListOptional=transactionRepository.findAllByUserId(customer.getUserId(),pageable);
+	 Optional<List<Transaction>>transactionListOptional=transactionRepository.findAllByCustomerId(customer.getUserId(),pageable);
 	 
 	    return transactionListOptional;
 	 }

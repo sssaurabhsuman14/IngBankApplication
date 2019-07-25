@@ -16,7 +16,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>
 	@Query(value="select * from transaction where customer_id=:customerId order by transaction_date desc limit 1", nativeQuery = true)
 	public Optional<Transaction> findLastTransaction(Long customerId);
 
-	public Optional<List<Transaction>> findAllByUserId(Long userId, Pageable pageable);
+	public Optional<List<Transaction>> findAllByCustomerId(Long userId, Pageable pageable);
 		
 
 
