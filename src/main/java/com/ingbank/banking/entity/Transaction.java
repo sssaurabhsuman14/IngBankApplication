@@ -51,6 +51,9 @@ public class Transaction implements Serializable
 	@Column(name = "status", nullable=false)
 	private String status;
 	
+	@Column(name = "balance", nullable=false)
+	private Double balance;
+	
 	@ManyToOne(fetch =FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id")
 	private Customer customer;

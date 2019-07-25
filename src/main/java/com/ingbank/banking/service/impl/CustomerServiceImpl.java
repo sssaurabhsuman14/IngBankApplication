@@ -1,24 +1,13 @@
 package com.ingbank.banking.service.impl;
 
-<<<<<<< Updated upstream
-import com.ingbank.banking.entity.Customer;
-import com.ingbank.banking.service.CustomerService;
+import java.util.Optional;
 
-public class CustomerServiceImpl implements CustomerService 
-{
-
-	@Override
-	public Customer getCustomer(Long customerId) {
-		
-		return null;
-	}
-=======
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
->>>>>>> Stashed changes
 
 import com.ingbank.banking.entity.Customer;
+import com.ingbank.banking.exception.ApplicationException;
 import com.ingbank.banking.model.CustomerRequestModel;
 import com.ingbank.banking.repository.CustomerRepository;
 import com.ingbank.banking.service.CustomerService;
@@ -43,7 +32,24 @@ public class CustomerServiceImpl implements CustomerService
 		
 		return  customerEntityoutput;
 	}
-
 	
+
+	@Override
+	public Customer getCustomer(Long customerId) throws ApplicationException {
+		
+		Optional<Customer> findByOptional = customerRepository.findById(customerId);
+		Customer customer = new Customer();
+		boolean isOptionalPresent = findByOptional.isPresent();
+		if(isOptionalPresent)
+		{
+			customer = findByOptional.get();
+		}
+		else
+		{
+			throw new ApplicationException("The Customer Not found with Id : "+customerId);
+		}
+		return customer;
+
+	}
 	
 }
