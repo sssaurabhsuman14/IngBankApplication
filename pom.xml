@@ -20,6 +20,19 @@
 	</properties>
 
 	<dependencies>
+	
+	<!-- spring-boot-starter-mail -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+	
+	
+	<!-- Google Guava -->
+        <dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
 
 		<!-- lombok -->
 		<dependency>
@@ -118,5 +131,15 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>20.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

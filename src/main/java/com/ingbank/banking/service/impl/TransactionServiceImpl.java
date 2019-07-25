@@ -115,5 +115,13 @@ public class TransactionServiceImpl implements TransactionService {
 		}
 		return transaction;
 	}
+	
+	public Transaction getTransactionById(Long id) {
+		Optional<Transaction> transaction = transactionRepository.findById(id);
+		if(transaction.isPresent()) {
+			return transaction.get();
+		}
+		return transaction.get();
+	}
 
 }

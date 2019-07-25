@@ -15,4 +15,7 @@ public interface TransactionService {
 	Transaction doTransaction(TransactionRequestModel transactionRequest)throws ApplicationException, SQLDataException;
 
 	//public Map<String, Map<String, List<StatementModel>>> getYearlyStatement(Long customerId, String month);
+	
+	
+	public Transaction getTransactionById(Long id);
 }
