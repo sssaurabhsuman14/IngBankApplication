@@ -52,14 +52,14 @@ public class TransactionServiceImpl implements TransactionService {
 			for(String month : list){
 				List<StatementModel> statementModelList = new ArrayList<StatementModel>();
 
-				List<Transaction> transactionList = null;//customer.getTransactionlist(); 
+				Optional<List<Transaction>> transactionList = viewTransactionHistory(customerId); 
 				StatementModel statementModel = new StatementModel();
 				statementModel.setTotalIncoming(0.00);
 				statementModel.setTotalOutgoing(0.00);
 				statementModel.setClosingBalance(0.00);
 				statementModel.setCustomerId(customerId);
 
-				for(Transaction transaction : transactionList) {
+				for(Transaction transaction : transactionList.get()) {
 
 					if(transaction.getTransactionDateTime().getMonth().name().equalsIgnoreCase(month)) {
 						if(transaction.getTransactionType().equalsIgnoreCase("Credit")) {
