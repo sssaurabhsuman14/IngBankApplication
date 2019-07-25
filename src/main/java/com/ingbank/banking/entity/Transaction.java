@@ -17,14 +17,17 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Table(name="transaction")
 @Data
-
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "transactionId")
+@AllArgsConstructor
+@NoArgsConstructor
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "transactionId")
 public class Transaction implements Serializable
 {
 	
@@ -54,9 +57,8 @@ public class Transaction implements Serializable
 	@Column(name = "balance", nullable=false)
 	private Double balance;
 	
-	@ManyToOne(fetch =FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "customer_id")
-	private Customer customer;
+	@Column(name = "customer_id", nullable=false)
+	private Long customerId;
 	
 
 }

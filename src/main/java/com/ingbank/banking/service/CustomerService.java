@@ -11,7 +11,7 @@ import com.ingbank.banking.model.CustomerRequestModel;
 public interface CustomerService
 {
 
-	public Customer getCustomer(Long customerId) throws ApplicationException;
+	 public Customer getCustomer(Long customerId) throws ApplicationException;
 	
 	 public Customer addCustomer(CustomerRequestModel customerRequestModel) throws ApplicationException;
 	 

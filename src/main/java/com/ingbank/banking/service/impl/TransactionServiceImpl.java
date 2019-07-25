@@ -1,5 +1,7 @@
 package com.ingbank.banking.service.impl;
 
+import java.sql.SQLDataException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,8 @@ import com.ingbank.banking.entity.Customer;
 import com.ingbank.banking.entity.Transaction;
 import com.ingbank.banking.exception.ApplicationException;
 import com.ingbank.banking.model.StatementModel;
+import com.ingbank.banking.model.TransactionRequestModel;
+import com.ingbank.banking.repository.CustomerRepository;
 import com.ingbank.banking.repository.TransactionRepository;
 import com.ingbank.banking.service.CustomerService;
 import com.ingbank.banking.service.TransactionService;
@@ -29,80 +33,12 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	TransactionService TransactionService;
 
+	@Autowired
+	CustomerRepository customerRepository;
 
 	@Autowired
 	TransactionRepository transactionRepository;
 
-	/*
-	 * @Override public Transaction doTransaction(TransactionRequestModel
-	 * transactionRequest) throws ApplicationException, SQLDataException {
-	 * Transaction fetchLastTransaction =
-	 * fetchLastTransaction(transactionRequest.getCustomerId()); Transaction
-	 * currentTransaction = new Transaction();
-	 * 
-	 * if(!ObjectUtils.isEmpty(fetchLastTransaction)) { if
-	 * (transactionRequest.getTransactionType().equalsIgnoreCase("RECEIVE PAYMENT"))
-	 * { receivePayment(transactionRequest, fetchLastTransaction); } else {
-	 * currentTransaction = makePayment(transactionRequest, fetchLastTransaction); }
-	 * } else { if
-	 * (transactionRequest.getTransactionType().equalsIgnoreCase("RECEIVE PAYMENT"))
-	 * { currentTransaction = receivePayment(transactionRequest,
-	 * fetchLastTransaction); } else { throw new ApplicationException( "Hi," +
-	 * fetchLastTransaction.getCustomer().getFirstName() +
-	 * " you dont have sufficient balance"); } } return currentTransaction; }
-	 * 
-	 * private Transaction makePayment(TransactionRequestModel transactionRequest,
-	 * Transaction fetchLastTransaction) throws ApplicationException { if
-	 * (fetchLastTransaction.getBalance() <
-	 * transactionRequest.getTransactionAmount()) throw new ApplicationException(
-	 * "Hi," + fetchLastTransaction.getCustomer().getFirstName() +
-	 * " you dont have sufficient balance"); else {
-	 * 
-	 * Transaction newTransaction = new Transaction();
-	 * newTransaction.setTransactionType(transactionRequest.getTransactionType());
-	 * newTransaction.setTransactionDescription(transactionRequest.
-	 * getTransactionDescription());
-	 * newTransaction.setCustomer(fetchLastTransaction.getCustomer());
-	 * newTransaction.setStatus("PENDING");
-	 * newTransaction.setTransactionDateTime(LocalDateTime.now());
-	 * newTransaction.setTransactionAmount(transactionRequest.getTransactionAmount()
-	 * ); newTransaction.setBalance(fetchLastTransaction.getBalance() -
-	 * transactionRequest.getTransactionAmount());
-	 * 
-	 * return transactionRepository.save(newTransaction); }
-	 * 
-	 * }
-	 * 
-	 * private Transaction receivePayment(TransactionRequestModel
-	 * transactionRequest, Transaction fetchLastTransaction) { Transaction
-	 * newTransaction = new Transaction();
-	 * newTransaction.setTransactionType(transactionRequest.getTransactionType());
-	 * newTransaction.setTransactionDescription(transactionRequest.
-	 * getTransactionDescription());
-	 * newTransaction.setCustomer(fetchLastTransaction.getCustomer());
-	 * newTransaction.setStatus("PENDING");
-	 * newTransaction.setTransactionDateTime(LocalDateTime.now());
-	 * newTransaction.setTransactionAmount(transactionRequest.getTransactionAmount()
-	 * ); newTransaction.setBalance(transactionRequest.getTransactionAmount() +
-	 * fetchLastTransaction.getBalance());
-	 * 
-	 * return transactionRepository.save(newTransaction);
-	 * 
-	 * }
-	 */
-
-	/*
-	 * private Transaction fetchLastTransaction(Long customerId) throws
-	 * ApplicationException { Transaction transaction = new Transaction(); Customer
-	 * customer = customerService.getCustomer(customerId); Sort
-	 * sortByTransactionDateTime = Sort.by(Sort.Direction.ASC,
-	 * "transactionDateTime"); Pageable page = PageRequest.of(0, 1,
-	 * sortByTransactionDateTime); Optional<Transaction> lastTransactionOptional =
-	 * transactionRepository.findByCustomer(customer, page); boolean
-	 * isOptionalPresent = lastTransactionOptional.isPresent(); if
-	 * (isOptionalPresent) { transaction = lastTransactionOptional.get(); } return
-	 * transaction; }
-	 */
 
 	public Map<String, List<StatementModel>> getYearlyStatement(Long customerId, String year){ 
 
@@ -116,7 +52,7 @@ public class TransactionServiceImpl implements TransactionService {
 			for(String month : list){
 				List<StatementModel> statementModelList = new ArrayList<StatementModel>();
 
-				List<Transaction> transactionList = customer.getTransactionlist(); 
+				List<Transaction> transactionList = null;//customer.getTransactionlist(); 
 				StatementModel statementModel = new StatementModel();
 				statementModel.setTotalIncoming(0.00);
 				statementModel.setTotalOutgoing(0.00);
@@ -147,10 +83,69 @@ public class TransactionServiceImpl implements TransactionService {
 
 		} catch (ApplicationException e) {
 			e.printStackTrace();
+			return transactionsMap;
 		}
 		return transactionsMap;
 	}
+	
+			
+			@Override
+	public Transaction doTransaction(TransactionRequestModel transactionRequest)
+			throws ApplicationException, SQLDataException 
+	{
+		Transaction fetchLastTransaction = fetchLastTransaction(transactionRequest.getCustomerId());
+		Customer customer = customerService.getCustomer(transactionRequest.getCustomerId());
+		Transaction currentTransaction = new Transaction();
+		
+		if(fetchLastTransaction.getTransactionId() == null)
+		{
+			if (transactionRequest.getTransactionType().equalsIgnoreCase("RECEIVE PAYMENT")) 
+			{
+				currentTransaction = receivePayment(transactionRequest, fetchLastTransaction, customer);
+			}
+			else
+			{
+				throw new ApplicationException(
+						"Hi," + customer.getFirstName() + " you dont have sufficient balance");
+			}
+			
+		}
+		else
+		{
+			if (transactionRequest.getTransactionType().equalsIgnoreCase("RECEIVE PAYMENT")) 
+			{
+				currentTransaction = receivePayment(transactionRequest, fetchLastTransaction, customer);
+			} 
+			else 
+			{
+				currentTransaction = makePayment(transactionRequest, fetchLastTransaction, customer);
+			}
+		}
+		
+		return currentTransaction;
+	}
 
+	private Transaction makePayment(TransactionRequestModel transactionRequest, Transaction fetchLastTransaction, Customer customer)
+			throws ApplicationException 
+	{
+		if (fetchLastTransaction.getBalance() < transactionRequest.getTransactionAmount())
+			throw new ApplicationException(
+					"Hi," + customer.getFirstName() + " you dont have sufficient balance");
+		else {
+
+			Transaction newTransaction = new Transaction();
+			newTransaction.setTransactionType(transactionRequest.getTransactionType());
+			newTransaction.setTransactionDescription(transactionRequest.getTransactionDescription());
+			newTransaction.setCustomerId(transactionRequest.getCustomerId());
+			newTransaction.setStatus("PENDING");
+			newTransaction.setTransactionDateTime(LocalDateTime.now());
+			newTransaction.setTransactionAmount(transactionRequest.getTransactionAmount());
+			newTransaction.setBalance(fetchLastTransaction.getBalance() - transactionRequest.getTransactionAmount());
+
+			return transactionRepository.save(newTransaction);
+		}
+	}
+		
 	public Map<String, Map<String, List<StatementModel>>> getYearly(Long customerId, String year){
 		Map<String, Map<String, List<StatementModel>>> yearMap = new HashMap<>();
 		Map map = this.getYearlyStatement(customerId, year);
@@ -175,14 +170,32 @@ public class TransactionServiceImpl implements TransactionService {
 		list.add("December");
 		return list;
 	}
-	private Transaction fetchLastTransaction(Long customerId) throws ApplicationException {
+	private Transaction receivePayment(TransactionRequestModel transactionRequest, Transaction fetchLastTransaction, Customer customer) {
+		Transaction newTransaction = new Transaction();
+		newTransaction.setTransactionType(transactionRequest.getTransactionType());
+		newTransaction.setTransactionDescription(transactionRequest.getTransactionDescription());
+		newTransaction.setCustomerId(transactionRequest.getCustomerId());
+		newTransaction.setStatus("PENDING");
+		newTransaction.setTransactionDateTime(LocalDateTime.now());
+		newTransaction.setTransactionAmount(transactionRequest.getTransactionAmount());
+		if(fetchLastTransaction.getBalance() == null)
+			newTransaction.setBalance(transactionRequest.getTransactionAmount());
+		else
+			newTransaction.setBalance(transactionRequest.getTransactionAmount() + fetchLastTransaction.getBalance());
+
+		return transactionRepository.save(newTransaction);
+
+	}
+
+	private Transaction fetchLastTransaction(Long customerId) throws ApplicationException 
+	{
 		Transaction transaction = new Transaction();
-		Customer customer = customerService.getCustomer(customerId);
-		Sort sortByTransactionDateTime = Sort.by(Sort.Direction.ASC, "transactionDateTime");
-		Pageable page = PageRequest.of(0, 1, sortByTransactionDateTime);
-		Optional<Transaction> lastTransactionOptional = transactionRepository.findByCustomer(customer);
+		
+		Optional<Transaction> lastTransactionOptional = transactionRepository.findLastTransaction(customerId);
+		
 		boolean isOptionalPresent = lastTransactionOptional.isPresent();
-		if (isOptionalPresent) {
+		if (isOptionalPresent) 
+		{
 			transaction = lastTransactionOptional.get();
 		}
 		return transaction;
@@ -195,6 +208,25 @@ public class TransactionServiceImpl implements TransactionService {
 		}
 		return transaction.get();
 	}
+	
+	@Override
+	public boolean doCheckCustomerId(Long customerId) {
+	 Optional<Customer> customer = customerRepository.findById(customerId);
+	 if(customer.isPresent()) {
+	  return true;
+	 }
+	 return false;
+	}
+
+	@Override
+	public Optional<List<Transaction>> viewTransactionHistory(Long userId) throws ApplicationException {
+	 Customer customer = customerService.getCustomer(userId);
+	 Pageable pageable = PageRequest.of(0, 10, Sort.by("transactionId").descending());
+	 Optional<List<Transaction>>transactionListOptional=transactionRepository.findAllByUserId(customer.getUserId(),pageable);
+	 
+	    return transactionListOptional;
+	 }
+
 
 
 }

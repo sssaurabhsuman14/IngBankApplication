@@ -69,7 +69,7 @@ public class OtpServiceImpl implements OtpService {
 		Customer customer = new Customer();
 		Transaction transaction = transactionService.getTransactionById(transactionId);
 		if(transaction != null ) {
-			Long userId = transaction.getCustomer().getUserId();
+			Long userId = transaction.getCustomerId();
 			customer =customerService.getCustomer(userId);
 		}
 		return generateOTP(String.valueOf(customer.getUserId()));
@@ -90,6 +90,8 @@ public class OtpServiceImpl implements OtpService {
 						clearOTP(customerId);
 						return (FAIL);
 					}else{
+						
+						
 						return SUCCESS;
 					}
 				}else {

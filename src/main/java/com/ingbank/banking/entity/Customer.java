@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "customer_id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 public class Customer implements Serializable
 {
 	
@@ -66,8 +66,6 @@ public class Customer implements Serializable
 		private String gender;
 		
 		
-		@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL,CascadeType.PERSIST,CascadeType.MERGE}, mappedBy = "customer")
-		List<Transaction> transactionlist;
 		
 	}
 

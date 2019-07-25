@@ -28,7 +28,7 @@
 		</Root>
 
 		<!-- LOG "com.com*" at TRACE level -->
-		<Logger name="com.hcl" level="trace"></Logger>
+		<Logger name="com.ingbank.banking" level="trace"></Logger>
 	</Loggers>
 
 </Configuration>

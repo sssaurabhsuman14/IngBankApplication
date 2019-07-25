@@ -42,8 +42,8 @@ public class MyEmailServiceImpl implements MyEmailService {
 		{	
 			SimpleMailMessage msg = new SimpleMailMessage();
 			msg.setFrom("sagargaikwad966@gmail.com");
-			msg.setSubject("LOAN OFFERS");
-			msg.setTo(to);
+			msg.setSubject(subject);
+			msg.setTo("sagar.gaikwad@hcl.com");
 			msg.setText(message);
 	        	
 	        mailSender.send(msg);

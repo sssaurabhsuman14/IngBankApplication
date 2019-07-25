@@ -33,7 +33,7 @@ public class OtpController {
 
 		int otp = otpService.processOtp(transactionId);
 
-		// myEmailService.sendOtpMessage("sssaurabhsuman@gmail.com", "OTP -SpringBoot", String.valueOf(otp));
+		myEmailService.sendOtpMessage("sssaurabhsuman@gmail.com", "OTP", String.valueOf(otp));
 
 		logger.info("OTP : " + otp);
 		return new ResponseEntity<Integer>(otp, HttpStatus.OK);
