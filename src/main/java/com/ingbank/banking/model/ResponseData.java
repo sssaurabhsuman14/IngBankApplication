@@ -14,6 +14,6 @@ public class ResponseData {
 	
 	private String responseMessage;
 	private HttpStatus responseStatus;
-	private Object responseData;
+	private Object data;
 
 }
