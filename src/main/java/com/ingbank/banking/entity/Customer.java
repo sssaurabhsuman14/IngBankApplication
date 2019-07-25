@@ -1,1 +1,62 @@
 package com.ingbank.banking.entity;
+
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.Email;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Entity
+@Table(name="customer")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "customer_id")
+public class Customer
+{
+	
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		@Column(name = "customer_id", nullable=false)
+		private Long userId;
+		
+		@Email
+		@Column(name = "email", nullable=false)
+		private String email;
+		
+		@Column(name = "last_name", nullable=false)
+		private String lastName;
+		
+		@Column(name = "first_name", nullable=false)
+		private String firstName;
+		
+		@Column(name = "date_of_birth", nullable=false)
+		private LocalDate dateOfBirth;
+		
+		@Column(name = "phone_number", nullable=false)
+		private String phoneNumber;
+		
+
+		@Column(name = "pan_number", nullable=false)
+		private String panNumber;
+		
+		@Column(name = "gender", nullable=false)
+		private String gender;
+		
+	}
+
+	
+	
+	
