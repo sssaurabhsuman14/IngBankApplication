@@ -2,9 +2,13 @@ package com.ingbank.banking.service;
 
 import org.springframework.stereotype.Service;
 
+import com.ingbank.banking.entity.Customer;
+
 @Service
-class CustomerService
+public interface CustomerService
 {
+
+	Customer getCustomer(Long customerId);
 	
 	
 }
