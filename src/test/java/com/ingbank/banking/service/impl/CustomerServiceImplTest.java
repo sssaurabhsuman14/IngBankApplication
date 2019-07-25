@@ -46,7 +46,7 @@ public class CustomerServiceImplTest
 	
 	{
 		tranlist.add(tran);
-		customer=new Customer(1l,"abc@gmail.com", "mane", "ram", LocalDate.now(), "9552524243", "COOPP1212", "male", tranlist);
+		customer=new Customer(1l,"abc@gmail.com", "mane", "ram", LocalDate.now(), "9552524243", "COOPP1212", "male");
 		
 		customerRequestModel=new CustomerRequestModel("abc@gmail.com", "mane", "ram", LocalDate.now(), "9552524243", "COOPP1212", "male");
 		
