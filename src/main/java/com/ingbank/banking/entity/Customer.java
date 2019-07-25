@@ -18,7 +18,6 @@ import javax.validation.constraints.Email;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +32,11 @@ import lombok.NoArgsConstructor;
 public class Customer implements Serializable
 {
 	
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6490058054767591976L;
+
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		@Column(name = "customer_id", nullable=false)
@@ -62,7 +66,8 @@ public class Customer implements Serializable
 		private String gender;
 		
 		
-		
+		@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL,CascadeType.PERSIST,CascadeType.MERGE}, mappedBy = "customer")
+		List<Transaction> transactionlist;
 		
 	}
 
