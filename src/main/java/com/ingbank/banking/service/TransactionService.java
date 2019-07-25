@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.ingbank.banking.entity.Transaction;
 import com.ingbank.banking.model.StatementModel;
 
 
@@ -19,4 +20,8 @@ public interface TransactionService {
 	
 	public Map<String, Map<String, List<StatementModel>>> getYearly(Long customerId, String year);
 
+	//public Map<String, Map<String, List<StatementModel>>> getYearlyStatement(Long customerId, String month);
+	
+	
+	public Transaction getTransactionById(Long id);
 }

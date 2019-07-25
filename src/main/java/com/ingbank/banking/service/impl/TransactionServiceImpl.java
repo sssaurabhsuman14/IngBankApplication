@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ingbank.banking.entity.Customer;
@@ -170,6 +174,27 @@ public class TransactionServiceImpl implements TransactionService {
 		list.add("November");
 		list.add("December");
 		return list;
-
 	}
+	private Transaction fetchLastTransaction(Long customerId) throws ApplicationException {
+		Transaction transaction = new Transaction();
+		Customer customer = customerService.getCustomer(customerId);
+		Sort sortByTransactionDateTime = Sort.by(Sort.Direction.ASC, "transactionDateTime");
+		Pageable page = PageRequest.of(0, 1, sortByTransactionDateTime);
+		Optional<Transaction> lastTransactionOptional = transactionRepository.findByCustomer(customer);
+		boolean isOptionalPresent = lastTransactionOptional.isPresent();
+		if (isOptionalPresent) {
+			transaction = lastTransactionOptional.get();
+		}
+		return transaction;
+	}
+	
+	public Transaction getTransactionById(Long id) {
+		Optional<Transaction> transaction = transactionRepository.findById(id);
+		if(transaction.isPresent()) {
+			return transaction.get();
+		}
+		return transaction.get();
+	}
+
+
 }

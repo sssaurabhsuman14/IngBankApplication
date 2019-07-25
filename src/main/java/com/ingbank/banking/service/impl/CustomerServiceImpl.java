@@ -19,11 +19,33 @@ public class CustomerServiceImpl implements CustomerService
 	@Autowired
 	CustomerRepository customerRepository;
 	
+	
 	@Override
-	public Customer addCustomer(CustomerRequestModel customerRequestModel) {
+	public Customer addCustomer(CustomerRequestModel customerRequestModel) throws ApplicationException {
 		
 		
 		Customer customerEntityInput=new Customer();
+		
+		
+		Optional<Customer>customeroptional=customerRepository.findByEmail(customerRequestModel.getEmail());
+		
+		
+		Boolean ispresent=customeroptional.isPresent();
+		
+		
+		if(ispresent)
+		{
+			Customer customerwithdbemail=customeroptional.get();
+			
+			
+			if(customerRequestModel.getEmail().equals(customerwithdbemail.getEmail()))
+			{
+				
+				throw new ApplicationException("Customer with is this email id already present");
+			}
+			
+		}
+		
 		
 		BeanUtils.copyProperties(customerRequestModel, customerEntityInput);
 		

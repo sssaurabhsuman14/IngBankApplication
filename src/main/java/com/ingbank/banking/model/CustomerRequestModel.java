@@ -1,9 +1,6 @@
 package com.ingbank.banking.model;
 
 import java.time.LocalDate;
-import java.util.List;
-
-import com.ingbank.banking.entity.Transaction;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
